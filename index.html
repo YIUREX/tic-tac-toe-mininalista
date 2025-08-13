@@ -3,17 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>3 en raya — Minimal</title>
+<title>3 en Raya — Minimal+</title>
 <meta name="theme-color" content="#f5f5f5" />
-<link rel="manifest" href="data:application/manifest+json,{
-  &quot;name&quot;:&quot;3 en Raya Minimal&quot;,
-  &quot;short_name&quot;:&quot;3 en Raya&quot;,
-  &quot;start_url&quot;:&quot;.&quot;,
-  &quot;display&quot;:&quot;standalone&quot;,
-  &quot;background_color&quot;:&quot;#f5f5f5&quot;,
-  &quot;theme_color&quot;:&quot;#f5f5f5&quot;,
-  &quot;orientation&quot;:&quot;portrait&quot;
-}">
 <style>
 :root{
   --bg: #f5f5f5;
@@ -21,24 +12,47 @@
   --muted: #6b7280;
   --accent: #2563eb;
   --cell-size: min(26vmin, 100px);
+  --x-color: #2563eb;
+  --o-color: #dc2626;
+}
+:root.dark{
+  --bg: #111827;
+  --card: #1f2937;
+  --muted: #9ca3af;
+  --accent: #3b82f6;
+  --x-color: #60a5fa;
+  --o-color: #f87171;
+  color-scheme: dark;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:#111}
+:root.dark body{color:#f9fafb}
 body{display:flex;align-items:center;justify-content:center;padding:16px}
 .wrap{width:100%;max-width:640px;display:flex;flex-direction:column;gap:20px}
-.panel{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
-h1{margin:0;font-size:20px}
+.panel{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.08);transition:background .3s,color .3s}
+h1{margin:0;font-size:20px;display:flex;align-items:center;justify-content:space-between}
+.settings-btn{background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted)}
 p.lead{margin:0;color:var(--muted);font-size:14px}
 .board{display:grid;grid-template-columns:repeat(3,var(--cell-size));grid-template-rows:repeat(3,var(--cell-size));gap:8px;justify-content:center}
-.cell{display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:12px;font-size:2em;cursor:pointer;transition:background .2s}
+.cell{display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:12px;font-size:2em;cursor:pointer;transition:background .2s, transform .2s}
+:root.dark .cell{background:#374151}
 .cell:hover{background:#e0e0e0}
+:root.dark .cell:hover{background:#4b5563}
 .cell.disabled{pointer-events:none;opacity:.6}
+.cell.played{animation:pop .2s ease}
+@keyframes pop{0%{transform:scale(.8)}100%{transform:scale(1)}}
+.win-cell{animation:flash 1s ease infinite alternate}
+@keyframes flash{0%{background:var(--accent)}100%{background:var(--card)}}
+.x-mark{color:var(--x-color)}
+.o-mark{color:var(--o-color)}
 .score{display:flex;justify-content:space-between;font-size:14px;margin-top:10px}
-button.btn{padding:10px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+button.btn{padding:10px;border:none;border-radius:8px;cursor:pointer;font-weight:600;transition:background .2s}
 button.primary{background:var(--accent);color:white}
 button.secondary{background:#e5e7eb;color:#111}
+:root.dark button.secondary{background:#4b5563;color:white}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:.2s}
 .modal{background:white;padding:20px;border-radius:12px;max-width:90%;box-shadow:0 4px 20px rgba(0,0,0,0.2);text-align:center}
+:root.dark .modal{background:#1f2937;color:#f9fafb}
 .modal h2{margin-top:0}
 .modal-bg.show{visibility:visible;opacity:1}
 </style>
@@ -46,17 +60,21 @@ button.secondary{background:#e5e7eb;color:#111}
 <body>
 <div class="wrap">
   <div class="panel">
-    <h1>3 en raya</h1>
-    <p class="lead">Minimal, móvil y con IA</p>
+    <h1>
+      3 en raya
+      <button id="settingsBtn" class="settings-btn">⚙️</button>
+    </h1>
+    <p class="lead">Minimal, móvil, IA o dos jugadores</p>
     <div id="board" class="board"></div>
     <div class="score">
-      <span>Tú (X): <b id="scoreX">0</b></span>
+      <span>Tú/Player 1 (X): <b id="scoreX">0</b></span>
       <span>Empates: <b id="scoreT">0</b></span>
-      <span>IA (O): <b id="scoreO">0</b></span>
+      <span>IA/Player 2 (O): <b id="scoreO">0</b></span>
     </div>
-    <div style="display:flex;gap:8px;margin-top:10px">
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
       <button id="restart" class="btn secondary">Reiniciar</button>
       <button id="newRound" class="btn primary">Nueva ronda</button>
+      <button id="modeToggle" class="btn secondary">Modo: IA</button>
     </div>
   </div>
 </div>
@@ -69,7 +87,6 @@ button.secondary{background:#e5e7eb;color:#111}
 </div>
 
 <script>
-// Elementos
 const boardEl = document.getElementById('board');
 const modalBg = document.getElementById('modalBg');
 const modalTitle = document.getElementById('modalTitle');
@@ -77,11 +94,17 @@ const modalClose = document.getElementById('modalClose');
 const scoreXEl = document.getElementById('scoreX');
 const scoreOEl = document.getElementById('scoreO');
 const scoreTEl = document.getElementById('scoreT');
+const modeToggle = document.getElementById('modeToggle');
+const settingsBtn = document.getElementById('settingsBtn');
 
 let board = Array(9).fill(null);
 let current = 'X';
 let playing = true;
+let vsAI = true;
 let scores = {X:0,O:0,T:0};
+let darkMode = localStorage.getItem('darkMode')==='true';
+
+if(darkMode) document.documentElement.classList.add('dark');
 
 // Modal
 function showModal(text){modalTitle.textContent=text;modalBg.classList.add('show');}
@@ -101,55 +124,49 @@ function render(){
   for(let i=0;i<9;i++){
     const cell=boardEl.children[i];
     cell.textContent=board[i]||'';
-    cell.classList.toggle('disabled',!!board[i]||!playing);
+    cell.className='cell'+(board[i]?' played':'')+(board[i]==='X'?' x-mark':'')+(board[i]==='O'?' o-mark':'')+((board[i]||!playing)?' disabled':'');
   }
 }
 
-// Lógica de jugada
 function onCell(i){
   if(!playing||board[i])return;
   board[i]=current;
+  render();
   let res=checkGame();
   if(res){endGame(res);return;}
-  current = 'O';
-  render();
-  setTimeout(aiMove,300);
+  current = current==='X'?'O':'X';
+  if(vsAI && current==='O'){
+    setTimeout(aiMove,300);
+  }
 }
 
-// IA básica
 function aiMove(){
   if(!playing) return;
   let move = findBestMove();
   board[move] = 'O';
+  render();
   let res = checkGame();
   if(res){endGame(res);return;}
   current = 'X';
-  render();
 }
 
-// IA: busca ganar o bloquear
 function findBestMove(){
   const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  // Intentar ganar
   for(let [a,b,c] of wins){
     let line=[board[a],board[b],board[c]];
     if(line.filter(v=>v==='O').length===2 && line.includes(null)){
       return [a,b,c][line.indexOf(null)];
     }
   }
-  // Bloquear
   for(let [a,b,c] of wins){
     let line=[board[a],board[b],board[c]];
     if(line.filter(v=>v==='X').length===2 && line.includes(null)){
       return [a,b,c][line.indexOf(null)];
     }
   }
-  // Centro
   if(board[4]===null) return 4;
-  // Esquinas
   const corners=[0,2,6,8].filter(i=>board[i]===null);
   if(corners.length) return corners[Math.floor(Math.random()*corners.length)];
-  // Laterales
   const sides=[1,3,5,7].filter(i=>board[i]===null);
   return sides[Math.floor(Math.random()*sides.length)];
 }
@@ -157,16 +174,25 @@ function findBestMove(){
 function checkGame(){
   const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   for(const [a,b,c] of wins){
-    if(board[a]&&board[a]===board[b]&&board[a]===board[c])return board[a];
+    if(board[a]&&board[a]===board[b]&&board[a]===board[c]){
+      highlightWin([a,b,c]);
+      return board[a];
+    }
   }
   if(board.every(Boolean))return 'T';
   return null;
 }
 
+function highlightWin(cells){
+  cells.forEach(i=>{
+    boardEl.children[i].classList.add('win-cell');
+  });
+}
+
 function endGame(res){
   playing=false;
-  if(res==='X'){scores.X++;showModal('¡Ganaste!');}
-  else if(res==='O'){scores.O++;showModal('La IA ganó');}
+  if(res==='X'){scores.X++;showModal('¡Ganó X!');}
+  else if(res==='O'){scores.O++;showModal('¡Ganó O!');}
   else{scores.T++;showModal('Empate');}
   updateScores();
   render();
@@ -180,14 +206,27 @@ function updateScores(){
 
 document.getElementById('restart').onclick=()=>{
   scores={X:0,O:0,T:0};
-  reset(true);
+  reset();
 };
-document.getElementById('newRound').onclick=()=>reset(true);
+document.getElementById('newRound').onclick=()=>reset();
 
-function reset(newRound=false){
+modeToggle.onclick=()=>{
+  vsAI=!vsAI;
+  modeToggle.textContent='Modo: '+(vsAI?'IA':'2 Jug.');
+  reset();
+};
+
+settingsBtn.onclick=()=>{
+  darkMode=!darkMode;
+  document.documentElement.classList.toggle('dark',darkMode);
+  localStorage.setItem('darkMode',darkMode);
+};
+
+function reset(){
   board=Array(9).fill(null);
   playing=true;
   current='X';
+  createBoard();
   render();
   updateScores();
 }
@@ -195,7 +234,7 @@ function reset(newRound=false){
 // Service Worker inline
 if('serviceWorker' in navigator){
   const swCode=`
-    const CACHE='3enraya-v1';
+    const CACHE='3enraya-v2';
     self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./'])));});
     self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});
   `;
@@ -203,10 +242,9 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register(URL.createObjectURL(blob));
 }
 
-// Install prompt
 window.addEventListener('beforeinstallprompt',(e)=>{
   e.preventDefault();
-  showModal('Instala la app desde las opciones de tu navegador para jugar offline.');
+  showModal('Instala la app desde tu navegador para jugar offline.');
 });
 
 createBoard();
