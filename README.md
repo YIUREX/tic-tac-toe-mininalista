@@ -1,1 +1,1 @@
-# tic-tac-toe-mininalista
+# tic-tac-toe-minimalista
