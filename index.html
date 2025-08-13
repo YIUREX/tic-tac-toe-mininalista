@@ -1,350 +1,217 @@
 <!doctype html>
-
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>3 en raya — The Different Minimal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg: #0f1724; /* dark navy */
-      --card: #0b1220;
-      --muted: #94a3b8;
-      --accent: #79ffe1; /* mint */
-      --accent-2: #9ad0ff; /* sky */
-      --glass: rgba(255,255,255,0.04);
-      --success: #6ee7b7;
-      --danger: #ff9aa2;
-      --cell-size: min(18vmin, 90px);
-      color-scheme: dark;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(41,56,84,0.2), transparent),
-                  linear-gradient(180deg,#071026 0%, #051021 100%);
-      font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      display:flex;align-items:center;justify-content:center;gap:20px;padding:28px;color:#e6eef6;
-    }
-    .wrap{
-      width:100%;max-width:980px;display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start;
-    }
-    .panel{
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:16px;padding:18px;border:1px solid rgba(255,255,255,0.04);box-shadow: 0 6px 30px rgba(2,6,23,0.6);
-    }
-    header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;color:#021024;font-weight:700}
-    h1{font-size:16px;margin:0}
-    p.lead{margin:0;color:var(--muted);font-size:13px}/* Board */
-.board-card{display:flex;flex-direction:column;align-items:center;gap:14px}
-.board{
-  display:grid;grid-template-columns:repeat(3, var(--cell-size));grid-template-rows:repeat(3, var(--cell-size));gap:12px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));padding:18px;border-radius:14px;
-  border:1px solid var(--glass);
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>3 en raya — Minimal</title>
+<meta name="theme-color" content="#f5f5f5" />
+<link rel="manifest" href="data:application/manifest+json,{
+  &quot;name&quot;:&quot;3 en Raya Minimal&quot;,
+  &quot;short_name&quot;:&quot;3 en Raya&quot;,
+  &quot;start_url&quot;:&quot;.&quot;,
+  &quot;display&quot;:&quot;standalone&quot;,
+  &quot;background_color&quot;:&quot;#f5f5f5&quot;,
+  &quot;theme_color&quot;:&quot;#f5f5f5&quot;,
+  &quot;orientation&quot;:&quot;portrait&quot;
+}">
+<style>
+:root{
+  --bg: #f5f5f5;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --cell-size: min(26vmin, 100px);
 }
-.cell{
-  width:var(--cell-size);height:var(--cell-size);display:grid;place-items:center;border-radius:12px;background:transparent;
-  cursor:pointer;transition:transform .12s ease, background .12s ease;position:relative;user-select:none;
-  box-shadow: inset 0 -6px 18px rgba(2,6,23,0.6);
-}
-.cell:hover{transform:translateY(-4px)}
-.cell.disabled{cursor:not-allowed;opacity:.9}
-.mark{width:70%;height:70%;display:grid;place-items:center;transform:scale(0);transition:transform .28s cubic-bezier(.2,.9,.22,1);}
-.cell.has .mark{transform:scale(1)}
-
-/* X and O */
-.x svg{width:100%;height:100%}
-.o svg{width:100%;height:100%}
-.x path{stroke:var(--accent-2);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.o circle{stroke:var(--accent);stroke-width:10;fill:none}
-
-/* sidebar */
-.sidebar{display:flex;flex-direction:column;gap:12px}
-.meta{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
-.turn{display:flex;align-items:center;gap:10px}
-.dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 4px 16px rgba(121,255,225,0.12)}
-.controls{display:flex;flex-direction:column;gap:8px}
-button.btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 12px;border-radius:10px;color:inherit;cursor:pointer}
-button.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#021024;border:none;font-weight:600}
-.small{font-size:13px;color:var(--muted)}
-.score{display:flex;gap:10px;align-items:center}
-.score .item{background:rgba(255,255,255,0.02);padding:8px 10px;border-radius:10px;font-size:13px}
-.mode{display:flex;gap:8px;align-items:center}
-
-footer{margin-top:8px;color:var(--muted);font-size:12px}
-
-@media (max-width:860px){
-  .wrap{grid-template-columns:1fr;}
-  .sidebar{order:2}
-}
-
-  </style>
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:#111}
+body{display:flex;align-items:center;justify-content:center;padding:16px}
+.wrap{width:100%;max-width:640px;display:flex;flex-direction:column;gap:20px}
+.panel{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.08)}
+h1{margin:0;font-size:20px}
+p.lead{margin:0;color:var(--muted);font-size:14px}
+.board{display:grid;grid-template-columns:repeat(3,var(--cell-size));grid-template-rows:repeat(3,var(--cell-size));gap:8px;justify-content:center}
+.cell{display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-radius:12px;font-size:2em;cursor:pointer;transition:background .2s}
+.cell:hover{background:#e0e0e0}
+.cell.disabled{pointer-events:none;opacity:.6}
+.score{display:flex;justify-content:space-between;font-size:14px;margin-top:10px}
+button.btn{padding:10px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+button.primary{background:var(--accent);color:white}
+button.secondary{background:#e5e7eb;color:#111}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:.2s}
+.modal{background:white;padding:20px;border-radius:12px;max-width:90%;box-shadow:0 4px 20px rgba(0,0,0,0.2);text-align:center}
+.modal h2{margin-top:0}
+.modal-bg.show{visibility:visible;opacity:1}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="panel board-card" aria-label="Tablero de 3 en raya">
-      <header>
-        <div class="logo">≠</div>
-        <div>
-          <h1>3 en raya</h1>
-          <p class="lead">Minimal, accesible y pulido — juega contra otra persona o contra la CPU</p>
-        </div>
-      </header><div id="board" class="board" role="grid" aria-label="Tablero de juego">
-    <!-- cells inserted by JS -->
-  </div>
-
-  <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap;">
-    <button id="restart" class="btn">Reiniciar partida</button>
-    <button id="newRound" class="btn primary">Nueva ronda</button>
-    <div class="small">Consejo: usa teclado (1-9) o clic para jugar.</div>
-  </div>
-
-  <footer>Diseño minimal — listo para GitHub Pages</footer>
-</section>
-
-<aside class="panel sidebar" aria-label="Controles y marcador">
-  <div class="meta">
-    <div class="turn">
-      <div class="dot" id="turnDot" aria-hidden></div>
-      <div>
-        <div style="font-weight:600" id="turnText">Turno: X</div>
-        <div class="small">Empieza X</div>
-      </div>
+<div class="wrap">
+  <div class="panel">
+    <h1>3 en raya</h1>
+    <p class="lead">Minimal, móvil y con IA</p>
+    <div id="board" class="board"></div>
+    <div class="score">
+      <span>Tú (X): <b id="scoreX">0</b></span>
+      <span>Empates: <b id="scoreT">0</b></span>
+      <span>IA (O): <b id="scoreO">0</b></span>
     </div>
-    <div class="score" aria-live="polite">
-      <div class="item">X: <strong id="scoreX">0</strong></div>
-      <div class="item">Empates: <strong id="scoreT">0</strong></div>
-      <div class="item">O: <strong id="scoreO">0</strong></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button id="restart" class="btn secondary">Reiniciar</button>
+      <button id="newRound" class="btn primary">Nueva ronda</button>
     </div>
   </div>
+</div>
 
-  <div class="panel" style="padding:12px;">
-    <div class="small" style="margin-bottom:8px">Modo de juego</div>
-    <div class="mode">
-      <label><input type="radio" name="mode" value="local" checked> Local</label>
-      <label><input type="radio" name="mode" value="cpu"> vs CPU</label>
-    </div>
-
-    <div style="margin-top:10px" class="small">Elige jugador</div>
-    <div style="display:flex;gap:8px;margin-top:6px">
-      <button id="pickX" class="btn">Jugar X</button>
-      <button id="pickO" class="btn">Jugar O</button>
-    </div>
-
-    <div style="margin-top:12px" class="small">Dificultad CPU</div>
-    <div style="display:flex;gap:8px;margin-top:6px">
-      <button id="easy" class="btn">Fácil</button>
-      <button id="hard" class="btn primary">Imparable</button>
-    </div>
+<div id="modalBg" class="modal-bg">
+  <div class="modal">
+    <h2 id="modalTitle"></h2>
+    <button id="modalClose" class="btn primary" style="margin-top:12px">Aceptar</button>
   </div>
+</div>
 
-  <div style="margin-top:12px" class="small">Atajos</div>
-  <ul class="small" style="margin:8px 0 0 18px;padding:0;color:var(--muted)">
-    <li>Teclas 1-9: casillas</li>
-    <li>R: reiniciar</li>
-  </ul>
-</aside>
+<script>
+// Elementos
+const boardEl = document.getElementById('board');
+const modalBg = document.getElementById('modalBg');
+const modalTitle = document.getElementById('modalTitle');
+const modalClose = document.getElementById('modalClose');
+const scoreXEl = document.getElementById('scoreX');
+const scoreOEl = document.getElementById('scoreO');
+const scoreTEl = document.getElementById('scoreT');
 
-  </div>  <script>
-    // Juego 3 en raya minimalista
-    const boardEl = document.getElementById('board');
-    const turnText = document.getElementById('turnText');
-    const turnDot = document.getElementById('turnDot');
-    const restartBtn = document.getElementById('restart');
-    const newRoundBtn = document.getElementById('newRound');
-    const scoreXEl = document.getElementById('scoreX');
-    const scoreOEl = document.getElementById('scoreO');
-    const scoreTEl = document.getElementById('scoreT');
+let board = Array(9).fill(null);
+let current = 'X';
+let playing = true;
+let scores = {X:0,O:0,T:0};
 
-    const pickX = document.getElementById('pickX');
-    const pickO = document.getElementById('pickO');
-    const easyBtn = document.getElementById('easy');
-    const hardBtn = document.getElementById('hard');
+// Modal
+function showModal(text){modalTitle.textContent=text;modalBg.classList.add('show');}
+modalClose.onclick=()=>modalBg.classList.remove('show');
 
-    let board = Array(9).fill(null);
-    let current = 'X';
-    let playing = true;
-    let mode = 'local';
-    let player = null; // null means human plays both
-    let difficulty = 'hard';
-    let scores = {X:0,O:0,T:0};
+// Crear tablero
+function createBoard(){
+  boardEl.innerHTML='';
+  for(let i=0;i<9;i++){
+    const cell=document.createElement('div');
+    cell.className='cell';
+    cell.onclick=()=>onCell(i);
+    boardEl.appendChild(cell);
+  }
+}
+function render(){
+  for(let i=0;i<9;i++){
+    const cell=boardEl.children[i];
+    cell.textContent=board[i]||'';
+    cell.classList.toggle('disabled',!!board[i]||!playing);
+  }
+}
 
-    // load scores
-    try{const s = JSON.parse(localStorage.getItem('ttt-scores')); if(s) scores = s}catch(e){}
-    updateScoreUI();
+// Lógica de jugada
+function onCell(i){
+  if(!playing||board[i])return;
+  board[i]=current;
+  let res=checkGame();
+  if(res){endGame(res);return;}
+  current = 'O';
+  render();
+  setTimeout(aiMove,300);
+}
 
-    function createBoard(){
-      boardEl.innerHTML = '';
-      for(let i=0;i<9;i++){
-        const cell = document.createElement('button');
-        cell.className = 'cell';
-        cell.setAttribute('role','button');
-        cell.setAttribute('aria-label', 'Casilla ' + (i+1));
-        cell.dataset.index = i;
-        cell.addEventListener('click',() => onCell(i));
-        boardEl.appendChild(cell);
-      }
+// IA básica
+function aiMove(){
+  if(!playing) return;
+  let move = findBestMove();
+  board[move] = 'O';
+  let res = checkGame();
+  if(res){endGame(res);return;}
+  current = 'X';
+  render();
+}
+
+// IA: busca ganar o bloquear
+function findBestMove(){
+  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  // Intentar ganar
+  for(let [a,b,c] of wins){
+    let line=[board[a],board[b],board[c]];
+    if(line.filter(v=>v==='O').length===2 && line.includes(null)){
+      return [a,b,c][line.indexOf(null)];
     }
-
-    function render(){
-      for(let i=0;i<9;i++){
-        const cell = boardEl.children[i];
-        cell.classList.toggle('has', !!board[i]);
-        cell.classList.toggle('disabled', !!board[i] || !playing);
-        cell.innerHTML = board[i] ? getMarkSVG(board[i]) : '';
-      }
-      turnText.textContent = playing ? ('Turno: ' + current) : 'Partida finalizada';
-      turnDot.style.background = current === 'X' ? 'var(--accent-2)' : 'var(--accent)';
+  }
+  // Bloquear
+  for(let [a,b,c] of wins){
+    let line=[board[a],board[b],board[c]];
+    if(line.filter(v=>v==='X').length===2 && line.includes(null)){
+      return [a,b,c][line.indexOf(null)];
     }
+  }
+  // Centro
+  if(board[4]===null) return 4;
+  // Esquinas
+  const corners=[0,2,6,8].filter(i=>board[i]===null);
+  if(corners.length) return corners[Math.floor(Math.random()*corners.length)];
+  // Laterales
+  const sides=[1,3,5,7].filter(i=>board[i]===null);
+  return sides[Math.floor(Math.random()*sides.length)];
+}
 
-    function getMarkSVG(mark){
-      if(mark === 'X') return `<div class="mark x" aria-hidden><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M18 18 L82 82 M82 18 L18 82"/></svg></div>`;
-      return `<div class="mark o" aria-hidden><svg viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="50" cy="50" r="28"/></svg></div>`;
-    }
+function checkGame(){
+  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for(const [a,b,c] of wins){
+    if(board[a]&&board[a]===board[b]&&board[a]===board[c])return board[a];
+  }
+  if(board.every(Boolean))return 'T';
+  return null;
+}
 
-    function onCell(i){
-      if(!playing || board[i]) return;
-      if(mode === 'cpu' && player && current !== player) return; // prevent human playing opponent's turn
-      makeMove(i, current);
-      if(mode === 'cpu' && playing) setTimeout(cpuPlay, 300);
-    }
+function endGame(res){
+  playing=false;
+  if(res==='X'){scores.X++;showModal('¡Ganaste!');}
+  else if(res==='O'){scores.O++;showModal('La IA ganó');}
+  else{scores.T++;showModal('Empate');}
+  updateScores();
+  render();
+}
 
-    function makeMove(i, mark){
-      board[i] = mark;
-      const r = checkGame(board);
-      if(r){
-        playing = false;
-        if(r.winner){
-          highlightWin(r.line);
-          scores[r.winner]++;
-          setTimeout(()=>alert(`Gana ${r.winner}!`), 150);
-        } else {
-          scores.T++;
-          setTimeout(()=>alert('Empate!'), 150);
-        }
-        saveScores();
-      } else {
-        current = current === 'X' ? 'O' : 'X';
-      }
-      render();
-    }
+function updateScores(){
+  scoreXEl.textContent=scores.X;
+  scoreOEl.textContent=scores.O;
+  scoreTEl.textContent=scores.T;
+}
 
-    function checkGame(b){
-      const wins = [ [0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6] ];
-      for(const line of wins){
-        const [a,b1,c] = line;
-        if(b[a] && b[a] === b[b1] && b[a] === b[c]){
-          return {winner: b[a], line};
-        }
-      }
-      if(b.every(Boolean)) return {winner: null};
-      return null;
-    }
+document.getElementById('restart').onclick=()=>{
+  scores={X:0,O:0,T:0};
+  reset(true);
+};
+document.getElementById('newRound').onclick=()=>reset(true);
 
-    function highlightWin(line){
-      for(const idx of line){
-        const cell = boardEl.children[idx];
-        cell.style.boxShadow = '0 6px 22px rgba(121,255,225,0.08), 0 0 0 6px rgba(121,255,225,0.02) inset';
-      }
-    }
+function reset(newRound=false){
+  board=Array(9).fill(null);
+  playing=true;
+  current='X';
+  render();
+  updateScores();
+}
 
-    function resetBoard(newRound=false){
-      board = Array(9).fill(null);
-      playing = true;
-      if(newRound){ current = 'X'; }
-      render();
-      setTimeout(()=>{
-        for(const cell of boardEl.children) cell.style.boxShadow='inset 0 -6px 18px rgba(2,6,23,0.6)';
-      },300);
-    }
+// Service Worker inline
+if('serviceWorker' in navigator){
+  const swCode=`
+    const CACHE='3enraya-v1';
+    self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./'])));});
+    self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});
+  `;
+  const blob=new Blob([swCode],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob));
+}
 
-    // CPU
-    function cpuPlay(){
-      if(!playing) return;
-      if(difficulty === 'easy'){
-        const empty = board.map((v,i)=>v?null:i).filter(x=>x!==null);
-        const choice = empty[Math.floor(Math.random()*empty.length)];
-        makeMove(choice, current);
-        return;
-      }
-      // hard: minimax
-      const move = bestMove(board, current);
-      makeMove(move, current);
-    }
+// Install prompt
+window.addEventListener('beforeinstallprompt',(e)=>{
+  e.preventDefault();
+  showModal('Instala la app desde las opciones de tu navegador para jugar offline.');
+});
 
-    function bestMove(bd, mark){
-      // minimax implementation: returns best index
-      const opponent = mark === 'X' ? 'O' : 'X';
-      const winnerNow = checkGame(bd);
-      if(winnerNow) return null; // shouldn't happen
-
-      let bestScore = -Infinity;
-      let move = null;
-      for(let i=0;i<9;i++){
-        if(!bd[i]){
-          bd[i] = mark;
-          const score = minimax(bd, 0, false, mark, opponent);
-          bd[i] = null;
-          if(score > bestScore){ bestScore = score; move = i; }
-        }
-      }
-      return move;
-    }
-
-    function minimax(bd, depth, isMaximizing, ai, hu){
-      const res = checkGame(bd);
-      if(res){
-        if(res.winner === ai) return 10 - depth;
-        if(res.winner === hu) return depth - 10;
-        return 0; // tie
-      }
-      if(isMaximizing){
-        let best = -Infinity;
-        for(let i=0;i<9;i++){
-          if(!bd[i]){ bd[i]=ai; best = Math.max(best, minimax(bd, depth+1, false, ai, hu)); bd[i]=null; }
-        }
-        return best;
-      } else {
-        let best = Infinity;
-        for(let i=0;i<9;i++){
-          if(!bd[i]){ bd[i]=hu; best = Math.min(best, minimax(bd, depth+1, true, ai, hu)); bd[i]=null; }
-        }
-        return best;
-      }
-    }
-
-    // controls
-    restartBtn.addEventListener('click', ()=>{ if(confirm('¿Reiniciar marcador y partida?')){ scores={X:0,O:0,T:0}; saveScores(); updateScoreUI(); resetBoard(true); } });
-    newRoundBtn.addEventListener('click', ()=>{ resetBoard(true); });
-
-    document.getElementsByName('mode').forEach(r=>r.addEventListener('change', e=>{ mode = e.target.value; player = mode==='local'?null: (player||'X'); resetBoard(true); }))
-    pickX.addEventListener('click', ()=>{ player='O'; alert('Jugarás como X — la CPU será O'); resetBoard(true); });
-    pickO.addEventListener('click', ()=>{ player='X'; alert('Jugarás como O — la CPU será X'); resetBoard(true); });
-    easyBtn.addEventListener('click', ()=>{ difficulty='easy'; easyBtn.classList.add('primary'); hardBtn.classList.remove('primary'); });
-    hardBtn.addEventListener('click', ()=>{ difficulty='hard'; hardBtn.classList.add('primary'); easyBtn.classList.remove('primary'); });
-
-    // keyboard
-    window.addEventListener('keydown', (e)=>{
-      if(e.key >= '1' && e.key <= '9'){
-        const idx = parseInt(e.key)-1; onCell(idx);
-      }
-      if(e.key.toLowerCase()==='r') resetBoard(true);
-    })
-
-    function saveScores(){ localStorage.setItem('ttt-scores', JSON.stringify(scores)); updateScoreUI(); }
-    function updateScoreUI(){ scoreXEl.textContent = scores.X; scoreOEl.textContent = scores.O; scoreTEl.textContent = scores.T; }
-
-    // init
-    createBoard(); render();
-
-    // Friendly hint: if mode cpu and CPU starts, let it play
-    const observer = new MutationObserver(()=>{
-      // when mode changes we may need to let CPU play
-      if(mode==='cpu' && player && current !== player && playing){ setTimeout(cpuPlay, 300); }
-    });
-    observer.observe(boardEl,{childList:true,subtree:true});
-  </script></body>
+createBoard();
+render();
+updateScores();
+</script>
+</body>
 </html>
